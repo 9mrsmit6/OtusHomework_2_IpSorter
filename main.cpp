@@ -14,12 +14,11 @@ int main()
               std::cout<<"FileNotfound"<<std::endl;
               return 0;
           }
-          std::cout<<"FileOpened"<<std::endl;
 
           //разбор
           for(std::string line; std::getline(file, line);)
           {
-              const auto& primeryString =split(line, '\t');
+              const auto& primeryString =split(line, '\t');                //попробовал поиграться с move.
               const auto& ipString      =split(primeryString.at(0),'.');
               const auto& ipNum         =ipParser(ipString);
               if(ipNum)
