@@ -18,12 +18,14 @@ jobs:
       - run: cmake --build . --target test
       - run: cmake --build . --target package
       - name: Create Release
+        permissions:
+            actions: write
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: RT ${{ github.ref }}
+          tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
           draft: false
           prerelease: false
