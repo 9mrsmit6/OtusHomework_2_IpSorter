@@ -1,76 +1,71 @@
-#include <cassert>
-#include <cstdlib>
-#include <iostream>
-#include <string>
-#include <vector>
-#include <fstream>
-#include <utility>
-
-
-
-// ("",  '.') -> [""]
-// ("11", '.') -> ["11"]
-// ("..", '.') -> ["", "", ""]
-// ("11.", '.') -> ["11", ""]
-// (".11", '.') -> ["", "11"]
-// ("11.22", '.') -> ["11", "22"]
-
-
-auto split(const std::string &str, char d)
-{
-    std::vector<std::string> r;
-
-    auto stop = str.find_first_of(d);
-    decltype(stop) start = 0;
-
-    while(stop != std::string::npos)
-    {
-        r.push_back(str.substr(start, stop - start));
-
-        start = stop + 1;
-        stop = str.find_first_of(d, start);
-    }
-
-    r.push_back(str.substr(start));
-
-    return r;
-}
+#include "utils.hpp"
+#include <algorithm>
 
 int main()
 {
     try
       {
-          std::vector<std::vector<std::string> > ip_pool;
+          std::vector<std::array<uint8_t,Ipinfo::len>> ipPoolInt;
 
           std::ifstream file("ip_filter.tsv");
           if(!file.is_open())
           {
-              return 1;
+              std::cout<<"FileNotfound"<<std::endl;
+              return 0;
           }
           std::cout<<"FileOpened"<<std::endl;
 
 
           for(std::string line; std::getline(file, line);)
           {
-              std::vector<std::string> v = split(line, '\t');
-              ip_pool.push_back(split(v.at(0), '.'));
+              const auto& primeryString =split(line, '\t');
+              const auto& ipString      =split(primeryString.at(0),'.');
+              const auto& ipNum         =ipParser(ipString);
+              if(ipNum)
+              {
+                  ipPoolInt.push_back(ipNum.value());
+              }
           }
 
           // TODO reverse lexicographically sort
 
-          for(std::vector<std::vector<std::string> >::const_iterator ip = ip_pool.cbegin(); ip != ip_pool.cend(); ++ip)
-          {
-              for(std::vector<std::string>::const_iterator ip_part = ip->cbegin(); ip_part != ip->cend(); ++ip_part)
-              {
-                  if (ip_part != ip->cbegin())
-                  {
-                      std::cout << ".";
+       //     printIpList(ipPoolInt);
 
-                  }
-                  std::cout << *ip_part;
+
+          auto compareRuleReverse=[](std::array<uint8_t,Ipinfo::len> a, std::array<uint8_t,Ipinfo::len> b)
+          {
+              auto ai=a.cbegin();
+              auto bi=b.cbegin();
+              bool ret;
+
+              for(;ai!=a.cend();++ai, ++bi)
+              {
+                  ret = ((*ai)>(*bi));
+
+                  if( (*ai==*bi) && (ai!=(a.cend()-1))  ){continue;}
+                  return ret;
               }
-              std::cout << std::endl;
-          }
+              return ret;
+          };
+
+            std::sort(ipPoolInt.begin(), ipPoolInt.end(), compareRuleReverse);
+
+            printIpList(ipPoolInt);
+
+//          for(std::vector<std::vector<std::string> >::const_iterator ip = ipPoolInt.cbegin(); ip != ip_pool.cend(); ++ip)
+//          {
+//              for(std::vector<std::string>::const_iterator ip_part = ip->cbegin(); ip_part != ip->cend(); ++ip_part)
+//              {
+//                  if (ip_part != ip->cbegin())
+//                  {
+//                      std::cout << ".";
+
+//                  }
+//                  std::cout << *ip_part;
+//              }
+//              std::cout << std::endl;
+//          }
+
 
           // 222.173.235.246
           // 222.130.177.64
