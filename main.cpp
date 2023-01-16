@@ -5,7 +5,8 @@ int main()
 {
     try
       {
-          std::vector<std::array<uint8_t,Ipinfo::len>> ipPoolInt;
+        //ввод данных
+          std::vector<IpAddress> ipPoolInt;
 
           std::ifstream file("ip_filter.tsv");
           if(!file.is_open())
@@ -15,7 +16,7 @@ int main()
           }
           std::cout<<"FileOpened"<<std::endl;
 
-
+          //разбор
           for(std::string line; std::getline(file, line);)
           {
               const auto& primeryString =split(line, '\t');
@@ -27,12 +28,9 @@ int main()
               }
           }
 
-          // TODO reverse lexicographically sort
+          //сортировка
 
-       //     printIpList(ipPoolInt);
-
-
-          auto compareRuleReverse=[](std::array<uint8_t,Ipinfo::len> a, std::array<uint8_t,Ipinfo::len> b)
+          auto compareRuleReverse=[](auto a, auto b)
           {
               auto ai=a.cbegin();
               auto bi=b.cbegin();
@@ -48,87 +46,26 @@ int main()
               return ret;
           };
 
-            std::sort(ipPoolInt.begin(), ipPoolInt.end(), compareRuleReverse);
+          std::sort(ipPoolInt.begin(), ipPoolInt.end(), compareRuleReverse);
+          printIpList(ipPoolInt);
 
-            printIpList(ipPoolInt);
+          //фильтры
 
-//          for(std::vector<std::vector<std::string> >::const_iterator ip = ipPoolInt.cbegin(); ip != ip_pool.cend(); ++ip)
-//          {
-//              for(std::vector<std::string>::const_iterator ip_part = ip->cbegin(); ip_part != ip->cend(); ++ip_part)
-//              {
-//                  if (ip_part != ip->cbegin())
-//                  {
-//                      std::cout << ".";
+          auto firstByteCompare =   [cmp=1]             (auto v){return (v[0]==cmp);};
+          auto twoBytesCompare  =   [cmp1=46, cmp2=70]  (auto v){return (v[0]==cmp1)&&(v[1]==cmp2);};
+          auto anyBytesCompare  =   [cmp=46]            (auto v)
+          {
+              for(const auto& el:v)
+              {
+                  if(el==cmp){return true;}
+              }
+              return false;
+          };
 
-//                  }
-//                  std::cout << *ip_part;
-//              }
-//              std::cout << std::endl;
-//          }
+          ipFilter(ipPoolInt, firstByteCompare);
+          ipFilter(ipPoolInt, twoBytesCompare);
+          ipFilter(ipPoolInt, anyBytesCompare);
 
-
-          // 222.173.235.246
-          // 222.130.177.64
-          // 222.82.198.61
-          // ...
-          // 1.70.44.170
-          // 1.29.168.152
-          // 1.1.234.8
-
-          // TODO filter by first byte and output
-          // ip = filter(1)
-
-          // 1.231.69.33
-          // 1.87.203.225
-          // 1.70.44.170
-          // 1.29.168.152
-          // 1.1.234.8
-
-          // TODO filter by first and second bytes and output
-          // ip = filter(46, 70)
-
-          // 46.70.225.39
-          // 46.70.147.26
-          // 46.70.113.73
-          // 46.70.29.76
-
-          // TODO filter by any byte and output
-          // ip = filter_any(46)
-
-          // 186.204.34.46
-          // 186.46.222.194
-          // 185.46.87.231
-          // 185.46.86.132
-          // 185.46.86.131
-          // 185.46.86.131
-          // 185.46.86.22
-          // 185.46.85.204
-          // 185.46.85.78
-          // 68.46.218.208
-          // 46.251.197.23
-          // 46.223.254.56
-          // 46.223.254.56
-          // 46.182.19.219
-          // 46.161.63.66
-          // 46.161.61.51
-          // 46.161.60.92
-          // 46.161.60.35
-          // 46.161.58.202
-          // 46.161.56.241
-          // 46.161.56.203
-          // 46.161.56.174
-          // 46.161.56.106
-          // 46.161.56.106
-          // 46.101.163.119
-          // 46.101.127.145
-          // 46.70.225.39
-          // 46.70.147.26
-          // 46.70.113.73
-          // 46.70.29.76
-          // 46.55.46.98
-          // 46.49.43.85
-          // 39.46.86.85
-          // 5.189.203.46
       }
       catch(const std::exception &e)
       {

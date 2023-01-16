@@ -17,24 +17,47 @@ enum Ipinfo
     ipMin=0
 };
 
+using IpAddress = std::array<uint8_t,Ipinfo::len>;
 
-void printIpList(const std::vector<std::array<uint8_t,Ipinfo::len>>& ipPoolInt)
+inline void printIP(const IpAddress& ip)
+{
+    bool isFirst=true;
+    for(const auto& byte:ip)
+    {
+        if(isFirst)   {   std::cout<<std::to_string(byte);  isFirst=false;    }
+        else          {   std::cout<<'.'<<std::to_string(byte);               }
+    }
+}
+
+void printIpList(const std::vector<IpAddress>& ipPoolInt)
 {
     for(const auto& ip:ipPoolInt)
     {
-        bool isFirst=true;
-        for(const auto& byte:ip)
-        {
-            if(isFirst)   {   std::cout<<std::to_string(byte);  isFirst=false;    }
-            else          {   std::cout<<'.'<<std::to_string(byte);               }
-        }
+        printIP(ip);
         std::cout<<std::endl;
     }
 }
 
+template <class List, class Compare>
+void ipFilter(const List& list, Compare comp)
+{
+     for(const auto& item:list)
+     {
+        if(comp(item))
+        {
+            printIP(item);
+            std::cout<<std::endl;
+        }
+
+     }
+}
+
+
+
+
 auto ipParser(const  std::vector<std::string>& ipStr)
 {
-    std::array<uint8_t,Ipinfo::len> numIp{192,168,0,1};
+    IpAddress numIp{192,168,0,1};
     std::optional<decltype(numIp)> ret{std::nullopt};
 
     if(ipStr.size()!=Ipinfo::len)       {       return ret; }
