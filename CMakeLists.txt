@@ -21,7 +21,7 @@ target_link_libraries(GTest::GTest INTERFACE gtest_main)
 add_executable(OtusHomework_2_IpSorter main.cpp utils.hpp )
 add_executable(OtusHomework_2_IpSorter_Test parserTest.cpp utils.hpp)
 
-target_include_directories(OtusHomework_2_IpSorter_Test    PRIVATE "${googletest_SOURCE_DIR}/googletest/include")
+target_include_directories(OtusHomework_2_IpSorter_Test    PRIVATE "${googletest_SOURCE_DIR}/googletest/include" EXCLUDE_FROM_ALL)
 target_link_libraries(OtusHomework_2_IpSorter_Test PRIVATE  GTest::GTest  )
 
 
