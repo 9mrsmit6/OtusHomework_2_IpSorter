@@ -38,4 +38,4 @@ include(CPack)
 
 #добавление теста
 enable_testing()
-add_test(UtilsTests tests)
+add_test(UtilsTests OtusHomework_2_IpSorter_Test)
