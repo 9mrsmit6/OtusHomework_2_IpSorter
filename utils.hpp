@@ -72,7 +72,11 @@ auto ipParser(const  std::vector<std::string>& ipStr)
             *ipD =ipPartInt;
             ipD++;
         }
-        catch(const std::exception &e)  {       return ret; }
+        catch(const std::exception &e)
+        {
+            std::cout<<"Faild IP address string: "<<ipPartStr<<std::endl;
+            return ret;
+        }
     }
 
     ret=numIp;
@@ -81,21 +85,22 @@ auto ipParser(const  std::vector<std::string>& ipStr)
 
 auto split(const std::string& str, char d)
 {
-    auto r=new std::vector<std::string>;
+//    auto r=new std::vector<std::string>;
+    auto r=std::vector<std::string>();
 
     auto stop = str.find_first_of(d);
     decltype(stop) start = 0;
 
     while(stop != std::string::npos)
     {
-        r->push_back(str.substr(start, stop - start));
+        r.push_back(str.substr(start, stop - start));
 
         start = stop + 1;
         stop = str.find_first_of(d, start);
     }
 
-    r->push_back(str.substr(start));
+    r.push_back(str.substr(start));
 
-    return std::move(*r);
+    return std::move(r);
 }
 #endif // UTILS_HPP

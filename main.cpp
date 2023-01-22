@@ -18,9 +18,9 @@ int main()
           //разбор
           for(std::string line; std::getline(file, line);)
           {
-              const auto& primeryString =split(line, '\t');                //попробовал поиграться с move.
-              const auto& ipString      =split(primeryString.at(0),'.');
-              const auto& ipNum         =ipParser(ipString);
+              const auto primeryString =split(line, '\t');                //попробовал поиграться с move.
+              const auto ipString      =split(primeryString.at(0),'.');
+              const auto ipNum         =ipParser(ipString);
               if(ipNum)
               {
                   ipPoolInt.push_back(ipNum.value());
@@ -29,23 +29,24 @@ int main()
 
           //сортировка
 
-          auto compareRuleReverse=[](auto a, auto b)
-          {
-              auto ai=a.cbegin();
-              auto bi=b.cbegin();
-              bool ret;
+//          auto compareRuleReverse=[](auto a, auto b)
+//          {
+//              auto ai=a.cbegin();
+//              auto bi=b.cbegin();
+//              bool ret;
 
-              for(;ai!=a.cend();++ai, ++bi)
-              {
-                  ret = ((*ai)>(*bi));
+//              for(;ai!=a.cend();++ai, ++bi)
+//              {
+//                  ret = ((*ai)>(*bi));
 
-                  if( (*ai==*bi) && (ai!=(a.cend()-1))  ){continue;}
-                  return ret;
-              }
-              return ret;
-          };
+//                  if( (*ai==*bi) && (ai!=(a.cend()-1))  ){continue;}
+//                  return ret;
+//              }
+//              return ret;
+//          };
 
-          std::sort(ipPoolInt.begin(), ipPoolInt.end(), compareRuleReverse);
+          std::sort(ipPoolInt.begin(), ipPoolInt.end(),std::greater{});
+//          std::sort(ipPoolInt.begin(), ipPoolInt.end(), compareRuleReverse);
           printIpList(ipPoolInt);
 
           //фильтры
