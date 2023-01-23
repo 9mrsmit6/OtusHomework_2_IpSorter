@@ -1,10 +1,11 @@
-
 #include <gtest/gtest.h>
 #include "utils.hpp"
+
 
 TEST (UtilsTests, IpParserTest)
 {
     std::vector<std::string> testString{"192","168","0","111"};
+
     auto ip=ipParser(testString);
     if(ip)
     {
